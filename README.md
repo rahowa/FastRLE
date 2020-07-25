@@ -24,11 +24,11 @@ $ mkdir build
 ```
 - install dependencies via `conan`
 ``` shell script
-conan install . -s build_type=Release --install-folder=build --build=boost -o boost:python_executable=[path to python]]bin/python  boost:python_version=[major.minor] -o boost:with_python=True --build=opencv --build=protobuf
+$ conan install . -s build_type=Release --install-folder=build --build=boost -o boost:python_executable=[path to python]]bin/python  boost:python_version=[major.minor] -o boost:with_python=True --build=opencv --build=protobuf
 ```
 - cd inside `build` and build library
 ```shell script
-$ cmake -DCMAKE_BUILD_TYPE=Release
+$ cmake -DCMAKE_BUILD_TYPE=Release -DPython_ROOT_DIR=[path to python]/bin ..
 $ make -j($nproc)
 $ make install
 ```
