@@ -1,0 +1,6 @@
+[requires]
+boost/1.72.0
+opencv/4.3.0@conan/stable
+
+[generators]
+cmake
