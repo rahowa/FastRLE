@@ -9,6 +9,8 @@
 #include <opencv2/core.hpp>
 #include <boost/algorithm/string.hpp>
 #include <ostream>
+#include <filesystem>
+
 
 template<typename T>
 auto mergeVectors(std::vector<T>&& vTo, std::vector<T>&& vFrom) -> std::vector<T> {
@@ -23,5 +25,7 @@ auto strToSize(std::string&& imgSizeStr) ->  cv::Size;
 auto sizeToStr(cv::Size&& imgSize) -> std::string;
 
 auto parseRle(std::string maskRle) -> std::vector<std::string>;
+
+auto filesInside(std::string && folder) -> std::vector<std::string> ;
 
 #endif //FAST_RLE_SHARED_UTILS_H

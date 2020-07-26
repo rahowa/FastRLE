@@ -4,6 +4,7 @@
 
 #include "shared_utils.h"
 
+
 auto strToSize(std::string&& imgSizeStr) ->  cv::Size {
     std::vector<std::string> imageShapes;
     boost::split(imageShapes, imgSizeStr, boost::is_any_of("x"));
@@ -23,3 +24,11 @@ auto parseRle(std::string maskRle) -> std::vector<std::string> {
     return parsedRLE;
 }
 
+auto filesInside(std::string && folder) -> std::vector<std::string> {
+    auto filesIt = std::filesystem::directory_iterator(folder);
+    std::vector<std::string> allFiles;
+    std::transform(std::filesystem::begin(filesIt), std::filesystem::end(filesIt),
+            std::back_inserter(allFiles),
+            [](auto && file){return file.path();});
+    return allFiles;
+}
