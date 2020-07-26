@@ -1,6 +1,6 @@
 
-#include "fast_rle/to_parts.h"
-#include "fast_rle/shared_utils.h"
+#include "to_parts.h"
+#include "shared_utils.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
