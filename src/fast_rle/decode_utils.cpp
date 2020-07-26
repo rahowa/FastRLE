@@ -3,7 +3,6 @@
 //
 
 #include "decode_utils.h"
-#include <iostream>
 
 
 auto decodeRle(RleFiles&& rles) noexcept -> std::vector<cv::Mat> {
