@@ -7,8 +7,10 @@
 
 auto decodeRle(RleFiles&& rles) noexcept -> std::vector<cv::Mat> {
     std::vector<cv::Mat> result(rles.size());
-    std::transform(rles.begin(), rles.end(), result.begin(),
-            [](auto&& rle){return rle2mask(rle);});
+    std::transform(std::make_move_iterator(rles.begin()),
+                   std::make_move_iterator(rles.end()),
+                   result.begin(),
+            [](auto && rle){return rle2mask(rle);});
     return result;
 }
 

@@ -15,7 +15,9 @@
 
 
 auto decodeRleMt(RleFiles&& rles) noexcept -> std::vector<cv::Mat> ;
+
 auto decodeRle(RleFiles&& rles) noexcept ->  std::vector<cv::Mat> ;
+
 auto rle2mask(const RleFile& rleFile) -> cv::Mat ;
 
 template <typename RandAccIterator>
