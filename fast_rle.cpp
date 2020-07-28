@@ -57,7 +57,6 @@ auto decodeRleWrapper(const boost::python::list & rlesWrapped) -> boost::python:
 auto encodeRleWrapper(const boost::python::list& imagesList) -> boost::python::list {
     auto converterFn = [&](boost::python::numpy::ndarray&& img){return ndarrayToCv(std::move(img));};
     auto images = pythonListToStd<boost::python::numpy::ndarray, cv::Mat>(imagesList, converterFn);
-    std::cout << "Images size 0:  " << images.size() << std::endl;
 
     auto imgSizes = std::accumulate(images.cbegin(), images.cend(),
             std::vector<cv::MatSize>{},
