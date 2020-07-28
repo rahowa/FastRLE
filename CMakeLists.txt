@@ -68,7 +68,7 @@ list(APPEND PT_HEADES_FILES ${PT_SRC_DIR}/rle_file_wrapper.h
 set(CSV_PARSER_FILES ${CSV_PARSER_DIR}/csv.h)
 
 
-add_executable(${EXE_NAME} main.cpp ${HEADERS_FILES}
+add_executable(${EXE_NAME} fast_rle_exe.cpp ${HEADERS_FILES}
         ${SRC_FILES}
         ${CSV_PARSER_FILES}
         )
