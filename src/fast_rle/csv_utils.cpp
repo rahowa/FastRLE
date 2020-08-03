@@ -13,9 +13,12 @@ auto readCSV(std::string&& filename) -> RleFiles {
     std::string tmpRle;
     std::string tmpImgSize;
     while (in.read_row(tmpFilename, tmpRle, tmpImgSize)){
-        resStruct.emplace_back(RleFile{std::move(tmpFilename),
-                                       std::move(tmpRle),
-                                       std::move(strToSize(std::move(tmpImgSize)))});
+        resStruct.emplace_back(
+                std::move(tmpFilename),
+                std::move(tmpRle),
+                std::move(strToSize(std::move(tmpImgSize))
+            )
+        );
     }
     return resStruct;
 }
@@ -29,7 +32,8 @@ auto saveCSV(std::string &&filename, RleFiles &&encodings) -> void {
                 resultCsv << std::move(it.filename) << ","
                           << std::move(it.rle) << ","
                           << std::move(it.imageSize) << '\n';
-    });
+        }
+    );
     resultCsv.close();
 }
 
