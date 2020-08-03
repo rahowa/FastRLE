@@ -23,8 +23,10 @@ auto rle2mask(const RleFile& rleFile) -> cv::Mat ;
 template <typename RandAccIterator>
 auto rle2mask(RandAccIterator begin, RandAccIterator end) -> std::vector<cv::Mat> {
     std::vector<cv::Mat> result(std::distance(begin, end));
-    std::transform(begin, end, result.begin(),
-            [](auto rle){return rle2mask(rle);});
+    std::transform(std::make_move_iterator(begin),
+                   std::make_move_iterator(end),
+                   result.begin(),
+                   [](auto && rle){return rle2mask(std::move(rle));});
     return result;
 }
 
