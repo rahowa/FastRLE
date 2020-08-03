@@ -8,8 +8,8 @@
 auto strToSize(std::string&& imgSizeStr) ->  cv::Size {
     std::vector<std::string> imageShapes;
     boost::split(imageShapes, std::move(imgSizeStr), boost::is_any_of("x"));
-    return {std::stoi(imageShapes.at(0)),
-            std::stoi(imageShapes.at(1))};
+    return {std::move(std::stoi(imageShapes.at(0))),
+            std::move(std::stoi(imageShapes.at(1)))};
 }
 
 auto sizeToStr(cv::Size&& imgSize) -> std::string {
