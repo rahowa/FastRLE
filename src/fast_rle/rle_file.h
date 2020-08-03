@@ -11,12 +11,20 @@
 #include <opencv2/highgui.hpp>
 
 struct RleFile{
+    RleFile() = default;
+    RleFile(const RleFile& other) noexcept;
+    RleFile(RleFile && other) noexcept;
+    RleFile(std::string filename, std::string rle, cv::Size imageSize) noexcept;
+    void operator = (const RleFile & other) noexcept ;
+    void operator = (RleFile && other) noexcept ;
+
     std::string filename;
     std::string rle;
     cv::Size imageSize;
 
     size_t size() const noexcept;
 };
+
 using RleFiles = std::vector<RleFile>;
 
 
