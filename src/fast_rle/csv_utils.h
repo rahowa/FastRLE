@@ -15,7 +15,9 @@
 #include <future>
 
 auto readCSV(std::string&& filename) -> RleFiles;
+
 auto saveCSV(std::string&& filename, RleFiles&& encodings) -> void;
+
 auto saveCSVMt(std::string&& filename, RleFiles&& encodings) -> void;
 
 #endif //FAST_RLE_CSV_UTILS_H
