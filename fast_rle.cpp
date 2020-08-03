@@ -2,10 +2,10 @@
 // Created by Валентин Евсеенко on 6/7/20.
 //
 
-#include "python_stuff/rle_file_wrapper.h"
-#include "python_stuff/python_utils.h"
-#include "python_stuff/converters.h"
 #include "python_stuff/about.h"
+#include "python_stuff/converters.h"
+#include "python_stuff/python_utils.h"
+#include "python_stuff/rle_file_wrapper.h"
 
 #include "fast_rle/rle_file.h"
 #include "fast_rle/csv_utils.h"
@@ -14,13 +14,11 @@
 #include "fast_rle/encode_utils.h"
 
 #include <boost/python.hpp>
-#include <boost/python/stl_iterator.hpp>
 #include <boost/python/numpy.hpp>
+#include <boost/python/stl_iterator.hpp>
 
-#include <algorithm>
 #include <numeric>
-
-
+#include <algorithm>
 
 
 auto readCSVWrapper(const boost::python::str & filename) -> boost::python::list {  //std::vector<RleFileWrapper>
@@ -32,25 +30,20 @@ auto readCSVWrapper(const boost::python::str & filename) -> boost::python::list 
         res.emplace_back(RleFileWrapper(rleFile));
         return std::move(res);
     });
-    return stdToPythonList(result);
+    return stdToPythonList(std::move(result));
 }
 
 
-auto decodeRleWrapper(const boost::python::list & rlesWrapped) -> boost::python::list {
-    auto extractOriginalFn = [](const RleFileWrapper& wrapper){return wrapper.originalFile;};
-    auto extractedRles = pythonListToStd<RleFileWrapper>(rlesWrapped);
-    RleFiles result(extractedRles.size());
-    std::transform(std::make_move_iterator(extractedRles.begin()),
-                   std::make_move_iterator(extractedRles.end()),
-                   result.begin(),
-                   extractOriginalFn);
+auto decodeRleWrapper(const boost::python::list & rlesWrapped) -> boost::python::list {    
+    auto extractOriginalFn = [](RleFileWrapper&& wrapper){return wrapper.originalFile;};
+    auto result = pythonListToStd<RleFileWrapper, RleFile>(rlesWrapped, extractOriginalFn);
     std::vector<cv::Mat> decodedRle(result.size());
-
     if(result.size() > 100)
         decodedRle = decodeRleMt(std::move(result));
-    else decodedRle = decodeRle(std::move(result));
+    else 
+        decodedRle = decodeRle(std::move(result));
 
-    return stdToPythonList(cvMatToNumpy(decodedRle));
+    return stdToPythonList(cvMatToNumpy(std::move(decodedRle)));
 }
 
 
@@ -78,7 +71,7 @@ auto encodeRleWrapper(const boost::python::list& imagesList) -> boost::python::l
                                 boost::python::str(encodedRles.at(idx).c_str()),
                             boost::python::make_tuple(imgSizes.at(idx)[0], imgSizes.at(idx)[1])};
     }
-    return stdToPythonList(result);
+    return stdToPythonList(std::move(result));
 }
 
 
