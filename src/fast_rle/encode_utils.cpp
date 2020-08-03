@@ -28,7 +28,8 @@ auto encodeRle(cv::Mat&& image) -> std::string {
 
 auto encodeRle(std::vector<cv::Mat>&& images) -> std::vector<std::string > {
     std::vector<std::string > result(images.size());
-    std::transform(images.begin(), images.end(),
+    std::transform(std::make_move_iterator(images.begin()),
+                   std::make_move_iterator(images.end()),
                    result.begin(),
                    [](auto&& img){return encodeRle(std::move(img));});
     return result;
