@@ -23,13 +23,11 @@
 
 auto readCSVWrapper(const boost::python::str & filename) -> boost::python::list {  //std::vector<RleFileWrapper>
     auto tmpRes = readCSV(extractString(filename));
-    auto result = std::accumulate(std::make_move_iterator(tmpRes.begin()),
-            std::make_move_iterator(tmpRes.end()),
-            std::vector<RleFileWrapper>{},
-            [](auto res, auto&& rleFile){
-        res.emplace_back(RleFileWrapper(rleFile));
-        return std::move(res);
-    });
+    std::vector<RleFileWrapper> result(tmpRes.size());
+    std::transform(std::make_move_iterator(tmpRes.begin()),
+                   std::make_move_iterator(tmpRes.end()),
+                   result.begin(),
+                   [](auto && rleFile){return RleFileWrapper(rleFile);});
     return stdToPythonList(std::move(result));
 }
 
