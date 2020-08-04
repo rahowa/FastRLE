@@ -48,26 +48,20 @@ auto decodeRleWrapper(const boost::python::list & rlesWrapped) -> boost::python:
 auto encodeRleWrapper(const boost::python::list& imagesList) -> boost::python::list {
     auto converterFn = [&](boost::python::numpy::ndarray&& img){return ndarrayToCv(std::move(img));};
     auto images = pythonListToStd<boost::python::numpy::ndarray, cv::Mat>(imagesList, converterFn);
+    std::vector<cv::Size> imgSizes(images.size());
+    std::transform(images.cbegin(), images.cend(), imgSizes.begin(),
+                    [](const auto & img){return cv::Size{img.size[0], img.size[1]};});
+    std::vector<RleFileWrapper> result(images.size());
+    std::vector<std::string > encodedRles(images.size());
 
-    auto imgSizes = std::accumulate(images.cbegin(), images.cend(),
-            std::vector<cv::MatSize>{},
-             [](auto res, auto & img){
-        res.emplace_back(img.size);
-        return std::move(res);
-    });
-
-    auto imagesCopy = images;
-    std::vector<RleFileWrapper> result(imagesCopy.size());
-    std::vector<std::string > encodedRles(imagesCopy.size());
-
-    if(imagesCopy.size() < 100)
-        encodedRles = encodeRle(std::move(imagesCopy));
-    else encodedRles = encodeRleMt(std::move(imagesCopy));
+    if(images.size() < 100)
+        encodedRles = encodeRle(std::move(images));
+    else encodedRles = encodeRleMt(std::move(images));
 
     for(size_t idx = 0; idx < result.size(); ++idx){
         result.at(idx) = {boost::python::str(std::string("image_" + std::to_string(idx) + ".png")),
-                                boost::python::str(encodedRles.at(idx).c_str()),
-                            boost::python::make_tuple(imgSizes.at(idx)[0], imgSizes.at(idx)[1])};
+                          boost::python::str(encodedRles.at(idx).c_str()),
+                          boost::python::make_tuple(imgSizes.at(idx).width, imgSizes.at(idx).height)};
     }
     return stdToPythonList(std::move(result));
 }
