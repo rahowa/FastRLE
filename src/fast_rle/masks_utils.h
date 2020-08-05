@@ -25,9 +25,8 @@ auto saveMasksMt(std::string&& name, cv::Mat&& mask) -> void;
 
 template <typename Iterator>
 auto loadMasks(Iterator begin, Iterator end) -> std::vector<cv::Mat> {
-    return std::accumulate(begin, end, std::vector<cv::Mat>{},
-            [](auto res, auto it){
-        res.emplace_back(cv::imread(it));
-        return std::move(res);
-    });
+    std::vector<cv::Mat> result(std::distance(begin, end));
+    std::transform(begin, end, result.begin(),
+                    [](const auto & it){return cv::imread(it);});
+    return result;
 }
