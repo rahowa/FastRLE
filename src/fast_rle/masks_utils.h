@@ -15,6 +15,9 @@
 #include <thread>
 
 
+template <typename Iterator>
+auto loadMasks(Iterator begin, Iterator end) -> std::vector<cv::Mat> ;
+
 auto loadMasks(std::string&& folder) -> std::vector<cv::Mat> ;
 
 auto loadMasksMt(std::string&& folder) -> std::vector<cv::Mat> ;
@@ -23,6 +26,7 @@ auto saveMasks(std::string&& name, cv::Mat&& mask) -> void;
 
 auto saveMasksMt(std::string&& name, cv::Mat&& mask) -> void;
 
+
 template <typename Iterator>
 auto loadMasks(Iterator begin, Iterator end) -> std::vector<cv::Mat> {
     std::vector<cv::Mat> result(std::distance(begin, end));
@@ -30,3 +34,5 @@ auto loadMasks(Iterator begin, Iterator end) -> std::vector<cv::Mat> {
                     [](const auto & it){return cv::imread(it);});
     return result;
 }
+
+
