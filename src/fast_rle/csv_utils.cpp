@@ -23,7 +23,7 @@ auto removeFiles(std::vector<std::string> && filenames) -> void {
 auto readCSV(std::string&& filename) -> RleFiles {
     io::CSVReader<3> in(filename);
     in.read_header(io::ignore_extra_column, "image_name", "rle", "image_shape");
-
+    
     RleFiles resStruct;
     std::string tmpFilename;
     std::string tmpRle;
@@ -41,32 +41,28 @@ auto readCSV(std::string&& filename) -> RleFiles {
 
 
 auto saveCSV(std::string &&filename, RleFiles &&encodings) -> void {
-    std::fstream resultCsv(filename);
-    resultCsv << "image_name," << "rle," << "image_shape,";
-    std::for_each(encodings.begin(), encodings.end(),
-            [&resultCsv](auto && it){
-                resultCsv << std::move(it.filename) << ","
-                          << std::move(it.rle) << ","
-                          << std::move(it.imageSize) << '\n';
-        }
-    );
-    resultCsv.close();
+    CSVWriter csvWriter(std::move(filename), "image_name", "rle", "image_shape");
+    std::for_each(std::make_move_iterator(encodings.begin()),
+                  std::make_move_iterator(encodings.end()), 
+                  [&](RleFile && it){
+                        csvWriter.write(std::move(it.filename),
+                                        std::move(it.rle),
+                                        std::move(it.imageSize));
+                    });
 }
 
 
 auto saveCSVMt(std::string &&filename, RleFiles &&encodings) -> void {
-    std::mutex m;
-    std::fstream resultCsv(filename);
+    CSVWriter csvWriter(std::move(filename), "image_name", "rle", "image_shape");
     auto numParts = std::max(2u, std::thread::hardware_concurrency());
     auto parts = ToParts(numParts, encodings.begin(), encodings.end());
-    std::vector<std::future<void>> futures(encodings.size());
+    std::vector<std::future<void>> futures;
 
     auto saveInstancesFn = [&](auto begin, auto end){
         std::for_each(begin, end, [&](auto&& it){
-            std::lock_guard lock(m);
-            resultCsv << std::move(it.filename) << ","
-                      << std::move(it.rle) << ","
-                      << std::move(it.imageSize) << '\n';
+            csvWriter.write(std::move(it.filename), 
+                            std::move(it.rle), 
+                            std::move(it.imageSize));
         });
     };
 
@@ -74,8 +70,10 @@ auto saveCSVMt(std::string &&filename, RleFiles &&encodings) -> void {
         auto part = parts.get();
         futures.emplace_back(std::async(saveInstancesFn, part.first, part.second));
     }
-    std::for_each(futures.begin(), futures.end(), [](auto&& it){it.get();});
-    resultCsv.close();
+
+    std::for_each(std::make_move_iterator(futures.begin()),
+                  std::make_move_iterator(futures.end()),
+                  [](auto && it){it.get();});
 }
 
 
