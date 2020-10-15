@@ -14,6 +14,11 @@
 #include <thread>
 #include <future>
 
+
+auto concatenateFiles(std::vector<std::string> && filenames) -> void;
+
+auto removeFiles(std::vector<std::string> && filenames) -> void;
+
 auto readCSV(std::string&& filename) -> RleFiles;
 
 auto saveCSV(std::string&& filename, RleFiles&& encodings) -> void;

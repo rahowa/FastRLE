@@ -4,6 +4,22 @@
 
 #include "csv_utils.h"
 
+
+auto concatenateFiles(const std::vector<std::string> & filenames) -> void {
+    std::ofstream baseFile(filenames.at(0), std::ios::app | std::ios::binary);
+    std::for_each_n(filenames.crbegin(), filenames.size() - 1, 
+    [&](const std::string & filename){baseFile << std::ifstream(filename, std::ios::binary).rdbuf();});
+}
+
+
+auto removeFiles(std::vector<std::string> && filenames) -> void {
+    auto removeFn = [](std::string && filename){std::remove(filename.c_str());};
+    std::for_each(std::make_move_iterator(filenames.begin()),
+                  std::make_move_iterator(filenames.end()),
+                  removeFn);
+}
+
+
 auto readCSV(std::string&& filename) -> RleFiles {
     io::CSVReader<3> in(filename);
     in.read_header(io::ignore_extra_column, "image_name", "rle", "image_shape");
