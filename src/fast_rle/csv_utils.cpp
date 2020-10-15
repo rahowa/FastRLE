@@ -79,3 +79,37 @@ auto saveCSVMt(std::string &&filename, RleFiles &&encodings) -> void {
 }
 
 
+auto saveCSVWithTmpFiles(std::string && filename, RleFiles&& encodings) -> void {
+    auto numParts = std::max(2u, std::thread::hardware_concurrency());
+    auto parts = ToParts(numParts, encodings.begin(), encodings.end());
+    std::vector<std::future<void>> futures;
+
+    auto saveInstancesFn = [&](auto begin, auto end, CSVWriter& csvWriter){
+        std::for_each(begin, end, [&](auto && it){
+             csvWriter.write(std::move(it.filename),
+                             std::move(it.rle),
+                             std::move(it.imageSize));
+        });
+    };
+
+    std::vector<std::string> tempFilenames;
+    tempFilenames.emplace_back(filename);
+    for(size_t idx = 1; idx < numParts; ++idx)
+        tempFilenames.emplace_back("tmp_" + std::to_string(idx) + ".csv");
+
+    std::vector<CSVWriter> csvFiles;
+    csvFiles.emplace_back(tempFilenames.at(0), "image_name", "rle", "image_shape");
+    for(size_t idx = 1; idx < numParts; ++idx)
+        csvFiles.emplace_back(tempFilenames.at(idx));
+
+    size_t tmpFileCounter{0};
+    while (!parts.done()){
+        auto part = parts.get();
+        futures.emplace_back(std::async(saveInstancesFn, part.first, part.second, std::ref(csvFiles.at(tmpFileCounter))));
+        ++tmpFileCounter;
+    }
+
+    std::for_each(futures.begin(), futures.end(), [](auto && it){it.get();});
+    concatenateFiles(tempFilenames);
+    removeFiles({tempFilenames.begin() + 1, tempFilenames.end()});
+}
