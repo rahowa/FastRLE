@@ -28,6 +28,16 @@ auto ndarrayToCv(const boost::python::numpy::ndarray& ndarr) -> cv::Mat ;
 auto ndarrayToCv(boost::python::numpy::ndarray&& ndarr) -> cv::Mat ;
 
 template<typename Sequence>
+auto stdToPythonList(const Sequence & seq) -> boost::python::list ;
+
+template<typename T>
+auto pythonListToStd(const boost::python::list& list) -> std::vector<T> ;
+
+template<typename InputT, typename  OutputT, typename Function>
+auto pythonListToStd(const boost::python::list& list, Function fnConverter) -> std::vector<OutputT> ;
+
+
+template<typename Sequence>
 auto stdToPythonList(const Sequence & seq) -> boost::python::list {
     boost::python::list result;
     std::for_each(seq.cbegin(), seq.cend(),
@@ -35,11 +45,13 @@ auto stdToPythonList(const Sequence & seq) -> boost::python::list {
     return result;
 }
 
+
 template<typename T>
 auto pythonListToStd(const boost::python::list& list) -> std::vector<T> {
     return {boost::python::stl_input_iterator<T>(list),
             boost::python::stl_input_iterator<T>()};
 }
+
 
 template<typename InputT, typename  OutputT, typename Function>
 auto pythonListToStd(const boost::python::list& list, Function fnConverter) -> std::vector<OutputT> {
