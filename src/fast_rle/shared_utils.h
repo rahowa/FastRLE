@@ -13,12 +13,7 @@
 
 
 template<typename T>
-auto mergeVectors(std::vector<T>&& vTo, std::vector<T>&& vFrom) -> std::vector<T> {
-    vTo.insert(vTo.end(),
-               std::make_move_iterator(vFrom.begin()),
-               std::make_move_iterator(vFrom.end()));
-    return vTo;
-}
+auto mergeVectors(std::vector<T>&& vTo, std::vector<T>&& vFrom) -> std::vector<T> ;
 
 auto strToSize(std::string&& imgSizeStr) ->  cv::Size;
 
@@ -28,4 +23,12 @@ auto parseRle(std::string maskRle) -> std::vector<std::string>;
 
 auto filesInside(std::string && folder) -> std::vector<std::string> ;
 
+
+template<typename T>
+auto mergeVectors(std::vector<T>&& vTo, std::vector<T>&& vFrom) -> std::vector<T> {
+    vTo.insert(vTo.end(),
+               std::make_move_iterator(vFrom.begin()),
+               std::make_move_iterator(vFrom.end()));
+    return vTo;
+}
 #endif //FAST_RLE_SHARED_UTILS_H
