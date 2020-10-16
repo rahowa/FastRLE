@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 20)
 project(${PROJ_NAME} LANGUAGES C CXX)
 
 if(CMAKE_BUILD_TYPE MATCHES Release)
-    set(CMAKE_CXX_FLAGS "-fPIC -m64 -Ofast -mtune=native -march=native -mfpmath=sse -flto -funroll-loops -fno-signed-zeros -fno-trapping-math -fexperimental-new-pass-manager -flto=thin")
+    set(CMAKE_CXX_FLAGS "-fPIC -m64 -Ofast -mtune=native -march=native -mfpmath=sse -flto -funroll-loops -fno-signed-zeros -fno-trapping-math" ) #-fexperimental-new-pass-manager -flto=thin")
 endif ()
 
 if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
