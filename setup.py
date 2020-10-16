@@ -63,10 +63,11 @@ class CMakeBuild(build_ext):
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
         
+        current_dir = ext.sourcedir
         build_folder = os.path.join(ext.sourcedir, 'build')
-        subprocess.check_call(['cmake', build_folder] + cmake_args, cwd=build_folder, env=env)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=build_folder)
-        subprocess.check_call(['cmake', '--install', '.'], cwd=build_folder)
+        subprocess.check_call(['cmake', current_dir] + cmake_args, cwd=build_folder, env=env)
+        subprocess.check_call(['cmake', '--build', build_folder] + build_args, cwd=build_folder)
+        subprocess.check_call(['cmake', '--install', build_folder], cwd=build_folder)
 
 
 setup(
@@ -79,7 +80,7 @@ setup(
     description='A test project using pybind11 and CMake',
     cmdclass=dict(build_ext=CMakeBuild),
     long_description=load_long_description(),
-    ext_modules=[CMakeExtension('cmake_example')],
+    ext_modules=[CMakeExtension('Boost_to_python')],
     packages=find_packages(include=['fast_rle', 'fast_rle.*', 'tests', 'benchmarks']),
     zip_safe=False,
     package_data={'fast_rle': ['*.so',]},
