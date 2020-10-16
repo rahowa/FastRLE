@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 from typing import Union, List
 
-import fast_rle_lib as fr
+from . import fast_rle_lib as fr
 
 
 def about() -> None:
@@ -77,4 +77,4 @@ def save_csv(path: Union[str, Path], rles: List[fr.RleFile]) -> None:
         rles: List[RleFile]
         list of encoded RLE files
     """
-    fr._save_rle(path, rles)
+    fr._save_rle(str(path), rles)
