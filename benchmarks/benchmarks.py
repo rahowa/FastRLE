@@ -2,8 +2,11 @@ import time
 import numpy as np 
 import pandas as pd
 
-import fast_rle as fr
 from functools import wraps
+
+from fast_rle import processing as fr 
+
+
 
 def measure(op_name):
     def measure_time(fun):
@@ -90,6 +93,4 @@ def benchmark_decode():
 
 
 if __name__ == "__main__":
-    # benchmark_decode()
-
-    print(fr.__spec__)
+    benchmark_decode()
