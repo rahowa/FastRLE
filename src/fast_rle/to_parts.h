@@ -8,16 +8,19 @@
 #include <utility>
 #include <iterator>
 #include <algorithm>
+#include <math.h>
+#include <iostream> 
+
 
 template <typename Iterator>
 class ToParts{
 public:
-    ToParts(uint8_t numParts, Iterator begin, Iterator end):
+    ToParts(size_t numParts, Iterator begin, Iterator end):
             numParts(numParts),
             begin(begin),
             end(end),
             finish(begin),
-            batchSize(std::distance(begin, end)/numParts)
+            batchSize(std::ceil(std::distance(begin, end)/float(numParts)))
     {
     };
 
@@ -26,7 +29,8 @@ public:
             return std::make_pair(end, end);
 
         begin = finish;
-        finish += std::min(batchSize, std::distance(finish, end));
+        auto diff = std::min(batchSize, static_cast<size_t>(std::distance(finish, end)));
+        std::advance(finish, diff);
         ++producedIterations;
         return std::make_pair(begin, finish);
     }
@@ -36,9 +40,9 @@ public:
     }
 
 private:
-    uint8_t producedIterations{0};
-    uint8_t numParts;
-    long batchSize;
+    size_t producedIterations{0};
+    size_t numParts;
+    size_t batchSize;
     Iterator begin;
     Iterator end;
     Iterator finish;
