@@ -6,7 +6,7 @@
 
 
 
-auto decodeRle(RleFiles&& rles) noexcept -> std::vector<cv::Mat> {
+auto decodeRle(RleFiles&& rles) -> std::vector<cv::Mat> {
     std::vector<cv::Mat> result(rles.size());
     std::transform(std::make_move_iterator(rles.begin()),
                    std::make_move_iterator(rles.end()),
@@ -16,7 +16,7 @@ auto decodeRle(RleFiles&& rles) noexcept -> std::vector<cv::Mat> {
 }
 
 
-auto decodeRleMt(RleFiles&& rles) noexcept -> std::vector<cv::Mat> {
+auto decodeRleMt(RleFiles&& rles) -> std::vector<cv::Mat> {
     std::vector<cv::Mat> masks;
     masks.reserve(rles.size());
 

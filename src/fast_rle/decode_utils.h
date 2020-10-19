@@ -14,9 +14,9 @@
 #include <thread>
 
 
-auto decodeRleMt(RleFiles&& rles) noexcept -> std::vector<cv::Mat> ;
+auto decodeRleMt(RleFiles&& rles) -> std::vector<cv::Mat> ;
 
-auto decodeRle(RleFiles&& rles) noexcept ->  std::vector<cv::Mat> ;
+auto decodeRle(RleFiles&& rles) ->  std::vector<cv::Mat> ;
 
 auto rle2mask(const RleFile& rleFile) -> cv::Mat ;
 
