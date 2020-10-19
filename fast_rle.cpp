@@ -36,7 +36,8 @@ auto readCSVWrapper(const boost::python::str & filename) -> boost::python::list 
 auto decodeRleWrapper(const boost::python::list & rlesWrapped) -> boost::python::list {    
     auto extractOriginalFn = [](RleFileWrapper&& wrapper){return wrapper.originalFile;};
     auto result = pythonListToStd<RleFileWrapper, RleFile>(rlesWrapped, extractOriginalFn);
-    std::vector<cv::Mat> decodedRle(result.size());
+    std::vector<cv::Mat> decodedRle;
+    decodedRle.reserve(result.size());
     if(result.size() > 1000)
         decodedRle = decodeRleMt(std::move(result));
     else decodedRle = decodeRle(std::move(result));
@@ -46,7 +47,7 @@ auto decodeRleWrapper(const boost::python::list & rlesWrapped) -> boost::python:
 
 
 auto encodeRleWrapper(const boost::python::list& imagesList) -> boost::python::list {
-    auto converterFn = [&](boost::python::numpy::ndarray&& img){return ndarrayToCv(std::move(img));};
+    auto converterFn = [](boost::python::numpy::ndarray&& img){return ndarrayToCv(std::move(img));};
     auto images = pythonListToStd<boost::python::numpy::ndarray, cv::Mat>(imagesList, converterFn);
     std::vector<cv::Size> imgSizes(images.size());
     std::transform(images.cbegin(), images.cend(), imgSizes.begin(),
