@@ -18,22 +18,25 @@ auto decodeRle(RleFiles&& rles) -> std::vector<cv::Mat> {
 
 auto decodeRleMt(RleFiles&& rles) -> std::vector<cv::Mat> {
     std::vector<cv::Mat> masks;
-    masks.reserve(rles.size());
 
     auto numParts = std::max(2u, std::thread::hardware_concurrency());
     auto parts = ToParts(numParts, rles.begin(), rles.end());
+    
     std::vector<std::future<std::vector<cv::Mat>>> futures;
     while (!parts.done()){
         auto part = parts.get();
-        futures.emplace_back(
-                std::async(std::launch::async,
-                           [&]{return rle2mask(part.first, part.second);}));
+        futures.push_back(std::async(std::launch::async,
+                           [=]{return rle2mask(part.first, part.second);}));
     }
 
-    std::for_each(futures.begin(), futures.end(),
-                  [&](auto&& future){masks = mergeVectors(std::move(masks), future.get());
-        }
-    );
+    std::for_each(std::make_move_iterator(futures.begin()),
+                  std::make_move_iterator(futures.end()), 
+                  [&](std::future<std::vector<cv::Mat>> && fut){
+                      auto tmpVector = fut.get();
+                      masks.insert(masks.end(), 
+                                   std::make_move_iterator(tmpVector.begin()),
+                                   std::make_move_iterator(tmpVector.end()));
+                  });
     return masks;
 }
 
