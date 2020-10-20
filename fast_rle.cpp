@@ -62,7 +62,7 @@ auto encodeRleWrapper(const boost::python::list& imagesList) -> boost::python::l
     for(size_t idx = 0; idx < result.size(); ++idx){
         result.at(idx) = {boost::python::str(std::string("image_" + std::to_string(idx) + ".png")),
                           boost::python::str(encodedRles.at(idx).c_str()),
-                          boost::python::make_tuple(imgSizes.at(idx).width, imgSizes.at(idx).height)};
+                          boost::python::make_tuple(imgSizes.at(idx).height, imgSizes.at(idx).width)};
     }
     return stdToPythonList(std::move(result));
 }

@@ -9,7 +9,7 @@
 RleFileWrapper::RleFileWrapper(const RleFile & rleFile):
     filename_(rleFile.filename),
     rle_(rleFile.rle),
-    imageSize_(boost::python::make_tuple(rleFile.imageSize.width, rleFile.imageSize.height)),
+    imageSize_(boost::python::make_tuple(rleFile.imageSize.height, rleFile.imageSize.width)),
     originalFile(rleFile)
 {
 };

@@ -14,7 +14,7 @@ auto strToSize(std::string&& imgSizeStr) ->  cv::Size {
 
 auto sizeToStr(cv::Size&& imgSize) -> std::string {
     std::ostringstream ss;
-    ss << imgSize.width << "x" << imgSize.height;
+    ss << imgSize.height << "x" << imgSize.width;
     return ss.str();
 }
 
