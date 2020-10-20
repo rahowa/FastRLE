@@ -6,27 +6,21 @@
 
 
 auto encodeRle(cv::Mat&& image) -> std::string {
-    std::vector<uchar> pixels(image.total() + 2, 0);
-    std::vector<int > result; //((pixels.size() + 1) / 2 + 1);
-    std::ostringstream ss;
-    std::memcpy(pixels.data() + 1, image.data, image.total());
+    image = image.reshape(1, 1);
 
-    std::vector<int> runs;
-    size_t runsCounter = 0;
-    runs.reserve(pixels.size());
-    for(size_t idx = 0; idx < pixels.size() - 1; ++idx){
-        if(pixels.at(idx + 1) != pixels.at(idx))
-            runs.at(runsCounter) = idx + 1;
-            ++runsCounter;
+    size_t count = 0;
+    std::string encoding = "";
+    for(size_t i = 0; i < image.total() - 1; ++i){
+        count = 1;
+        if((int)image.at<uchar>(i) == 255){
+            while(image.at<uchar>(i) == image.at<uchar>(i + 1)){
+                ++count;
+                ++i;
+            }
+            encoding += std::to_string(i - 1) + " " + std::to_string(count) + " ";
+        }
     }
-    runs.shrink_to_fit();
-    
-    for(size_t idx = 0; idx < runs.size(); idx+=2){
-        runs.at(idx + 1) -= runs.at(idx);
-    }
-
-    std::move(runs.begin(), runs.end(), std::ostream_iterator<int>(ss, " "));
-    return ss.str();
+    return encoding;
 }
 
 
@@ -42,6 +36,8 @@ auto encodeRle(std::vector<cv::Mat>&& images) -> std::vector<std::string > {
 
 auto encodeRleMt(std::vector<cv::Mat>&& images) -> std::vector<std::string> {
     std::vector<std::string> encodings; //(images.size());
+    encodings.reserve(images.size());
+
     auto numParts = std::max(2u, std::thread::hardware_concurrency());
     auto parts = ToParts(numParts, images.begin(), images.end());
     std::vector<std::future<std::vector<std::string>>> futures;
@@ -56,7 +52,7 @@ auto encodeRleMt(std::vector<cv::Mat>&& images) -> std::vector<std::string> {
                   std::make_move_iterator(futures.end()), 
                   [&](std::future<std::vector<std::string>> && fut){
                       auto tmpVector = fut.get();
-                      encodings.insert(encodings.end(), 
+                      encodings.insert(encodings.cend(), 
                                    std::make_move_iterator(tmpVector.begin()),
                                    std::make_move_iterator(tmpVector.end()));
                   });
