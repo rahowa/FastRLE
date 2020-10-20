@@ -9,7 +9,7 @@ auto cvMatToNumpy(const cv::Mat& image) -> boost::python::numpy::ndarray {
     boost::python::tuple shape = boost::python::make_tuple(image.rows, image.cols, 1);
     boost::python::tuple stride = boost::python::make_tuple(image.cols * sizeof(uchar), sizeof(uchar), sizeof(uchar));
     boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<uchar>();
-    return boost::python::numpy::from_data(image.clone().data, dt, shape, stride, boost::python::object());
+    return boost::python::numpy::from_data(image.data, dt, shape, stride, boost::python::object());
 }
 
 
@@ -17,7 +17,7 @@ auto cvMatToNumpy(cv::Mat&& image) -> boost::python::numpy::ndarray {
     boost::python::tuple shape = boost::python::make_tuple(image.rows, image.cols, 1);
     boost::python::tuple stride = boost::python::make_tuple(image.cols * sizeof(uchar), sizeof(uchar), sizeof(uchar));
     boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<uchar>();
-    return boost::python::numpy::from_data(image.clone().data, dt, shape, stride, boost::python::object());
+    return boost::python::numpy::from_data(image.data, dt, shape, stride, boost::python::object());
 }
 
 
