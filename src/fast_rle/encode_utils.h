@@ -19,16 +19,22 @@
 
 
 auto encodeRle(cv::Mat&& image) -> std::string;
+
 auto encodeRle(std::vector<cv::Mat>&& images) -> std::vector<std::string >;
+
+template <typename Iterator>
+auto encodeRle(Iterator begin, Iterator end) -> std::vector<std::string > ;
+
+auto encodeRleMt(std::vector<cv::Mat>&& images) -> std::vector<std::string >;
 
 template <typename Iterator>
 auto encodeRle(Iterator begin, Iterator end) -> std::vector<std::string > {
     std::vector<std::string > result(std::distance(begin, end));
-    std::transform(begin, end, result.begin(),
-            [](auto && image){return encodeRle(std::move(image));});
+    std::transform(std::make_move_iterator(begin),
+                   std::make_move_iterator(end),
+                   result.begin(),
+                   [](auto && image){return encodeRle(std::move(image));});
     return result;
 }
-
-auto encodeRleMt(std::vector<cv::Mat>&& images) -> std::vector<std::string >;
 
 #endif //FAST_RLE_ENCODE_UTILS_H
