@@ -43,21 +43,21 @@ auto decodeRleMt(RleFiles&& rles) -> std::vector<cv::Mat> {
 
 auto rle2mask(const RleFile& rleFile) -> cv::Mat {
     auto rle = parseRle(std::move(rleFile.rle));
-
-    std::vector<unsigned char > mask(rleFile.imageSize.width * rleFile.imageSize.height, 0);
-
+    cv::Mat mask(1, rleFile.imageSize.height * rleFile.imageSize.width, CV_8UC1);
     size_t idx = 0;
     auto maskBegin = rle.begin();
     auto maskEnd = rle.end();
+    cv::Mat res(rleFile.imageSize, CV_8UC1);
     while (maskBegin != maskEnd){
         size_t start = std::max(0, std::stoi(rle.at(idx)) - 1);
         size_t lenght = std::max(0, std::stoi(rle.at(idx + 1)));
         size_t finish = std::max(0ul, start + lenght);
         for(size_t row = start; row < finish; ++row)
-            mask.at(row) = 255;
+            mask.at<uchar>(row) = 255;
 
         std::advance(maskBegin, 2);
         idx += 2;
     }
-    return {rleFile.imageSize, CV_8UC1, mask.data()};
+    mask = mask.reshape(1, rleFile.imageSize.height);
+    return mask;
 }
