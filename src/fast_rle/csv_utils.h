@@ -24,6 +24,8 @@ auto readCSV(std::string&& filename) -> RleFiles;
 
 auto saveCSV(std::string&& filename, RleFiles&& encodings) -> void;
 
+auto saveCSV(std::string &&filename, RleFile&& encodings) -> void;
+
 auto saveCSVMt(std::string&& filename, RleFiles&& encodings) -> void;
 
 auto saveCSVWithTmpFiles(std::string && filename, RleFiles&& encodings) -> void;

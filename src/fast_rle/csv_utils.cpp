@@ -40,6 +40,14 @@ auto readCSV(std::string&& filename) -> RleFiles {
 }
 
 
+auto saveCSV(std::string &&filename, RleFile&& encodings) -> void {
+    CSVWriter csvWriter(std::move(filename), "image_name", "rle", "image_shape");
+    csvWriter.write(std::move(encodings.filename),
+                    std::move(encodings.rle),
+                    std::move(encodings.imageSize));
+}
+
+
 auto saveCSV(std::string &&filename, RleFiles &&encodings) -> void {
     CSVWriter csvWriter(std::move(filename), "image_name", "rle", "image_shape");
     std::for_each(std::make_move_iterator(encodings.begin()),
