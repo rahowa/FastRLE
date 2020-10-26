@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <iostream>
+#include "python_stuff/python_utils.h"
 
 
 auto cvMatToNumpy(const cv::Mat& image) -> boost::python::numpy::ndarray ;
@@ -25,7 +26,6 @@ auto cvMatToNumpy(std::vector<cv::Mat>&& images) -> std::vector<boost::python::n
 
 auto ndarrayToCv(const boost::python::numpy::ndarray& ndarr) -> cv::Mat ;
 
-auto ndarrayToCv(boost::python::numpy::ndarray&& ndarr) -> cv::Mat ;
 
 template<typename Sequence>
 auto stdToPythonList(const Sequence & seq) -> boost::python::list ;

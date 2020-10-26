@@ -23,8 +23,8 @@ auto cvMatToNumpy(cv::Mat&& image) -> boost::python::numpy::ndarray {
 
 auto cvMatToNumpy(const std::vector<cv::Mat>& images) -> std::vector<boost::python::numpy::ndarray> {
     std::vector<boost::python::numpy::ndarray> result;
-    std::transform(images.begin(),
-                   images.end(),
+    std::transform(images.cbegin(),
+                   images.cend(),
                    std::back_inserter(result),
                    [](cv::Mat img){return cvMatToNumpy(img);});
     return result;
@@ -42,17 +42,22 @@ auto cvMatToNumpy(std::vector<cv::Mat>&& images) -> std::vector<boost::python::n
 
 
 auto ndarrayToCv(const boost::python::numpy::ndarray& ndarr) -> cv::Mat {
+    const int numDims = ndarr.get_nd();
     const Py_intptr_t* shape = ndarr.get_shape();
-    char* dtype_str = boost::python::extract<char *>(boost::python::str(ndarr.get_dtype()));
+    const auto dtypeStr  = extractString(boost::python::str(ndarr.get_dtype()));
 
     // variables for creating Mat object
-    int rows = shape[0];
-    int cols = shape[1];
-    int channel = shape[2];
-    int depth;
+    size_t rows = shape[0];
+    size_t cols = shape[1];
+    size_t channels;
 
+    if (numDims == 3)
+        channels = shape[2];
+    else channels = 1;
+
+    int depth;
     // you should find proper type for c++. in this case we use 'CV_8UC3' image, so we need to create 'uchar' type Mat.
-    if (!strcmp(dtype_str, "uint8")) {
+    if (dtypeStr == "uint8") {
         depth = CV_8U;
     }
     else {
@@ -60,30 +65,7 @@ auto ndarrayToCv(const boost::python::numpy::ndarray& ndarr) -> cv::Mat {
         return cv::Mat();
     }
 
-    cv::Mat mat = cv::Mat(rows, cols, CV_MAKETYPE(depth, channel));
-    memcpy(mat.data, ndarr.get_data(), sizeof(uchar) * rows * cols * channel);
-    return mat;
-}
-
-
-auto ndarrayToCv(boost::python::numpy::ndarray&& ndarr) -> cv::Mat {
-    const Py_intptr_t* shape = ndarr.get_shape();
-    char* dtype_str = boost::python::extract<char *>(boost::python::str(ndarr.get_dtype()));
-
-    int rows = shape[0];
-    int cols = shape[1];
-    int channel = shape[2];
-    int depth;
-
-    if (!strcmp(dtype_str, "uint8")) {
-        depth = CV_8U;
-    }
-    else {
-        std::cout << "wrong dtype error" << std::endl;
-        return cv::Mat();
-    }
-
-    cv::Mat mat = cv::Mat(rows, cols, CV_MAKETYPE(depth, channel));
-    memmove(mat.data, ndarr.get_data(), rows * cols * channel);
+    cv::Mat mat = cv::Mat(rows, cols, CV_MAKETYPE(depth, channels));
+    memcpy(mat.data, ndarr.get_data(), sizeof(uchar) * rows * cols * channels);
     return mat;
 }
