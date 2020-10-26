@@ -34,7 +34,8 @@ set(CSV_PARSER_DIR ${SRC_DIR}/fast-cpp-csv-parse)
 set(PT_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/python_stuff)
 
 
-list(APPEND SRC_FILES ${SRC_DIR}/rle_file.cpp
+list(APPEND SRC_FILES
+        ${SRC_DIR}/rle_file.cpp
         ${SRC_DIR}/log_latency.cpp
         ${SRC_DIR}/to_parts.h
         ${SRC_DIR}/shared_utils.cpp
@@ -46,7 +47,8 @@ list(APPEND SRC_FILES ${SRC_DIR}/rle_file.cpp
         ${SRC_DIR}/csv_writer.hpp
         )
 
-list(APPEND HEADERS_FILES ${SRC_DIR}/rle_file.h
+list(APPEND HEADERS_FILES
+        ${SRC_DIR}/rle_file.h
         ${SRC_DIR}/to_parts.h
         ${SRC_DIR}/shared_utils.h
         ${SRC_DIR}/csv_utils.h
@@ -58,31 +60,47 @@ list(APPEND HEADERS_FILES ${SRC_DIR}/rle_file.h
         )
 
 
-list(APPEND PT_SRC_FILES ${PT_SRC_DIR}/rle_file_wrapper.cpp
+list(APPEND PT_SRC_FILES
+        ${PT_SRC_DIR}/rle_file_wrapper.cpp
         ${PT_SRC_DIR}/python_utils.cpp
         ${PT_SRC_DIR}/converters.cpp
+        ${PT_SRC_DIR}/decoding_wrapper.hpp
+        ${PT_SRC_DIR}/encoding_wrapper.hpp
+        ${PT_SRC_DIR}/saving_wrapper.hpp
+        ${PT_SRC_DIR}/reading_wrapper.hpp
+        ${PT_SRC_DIR}/load_masks_wrapper.hpp
         )
-list(APPEND PT_HEADES_FILES ${PT_SRC_DIR}/rle_file_wrapper.h
+        
+list(APPEND PT_HEADES_FILES
+        ${PT_SRC_DIR}/rle_file_wrapper.h
         ${PT_SRC_DIR}/python_utils.h
         ${PT_SRC_DIR}/converters.h
+        ${PT_SRC_DIR}/decoding_wrapper.cpp
+        ${PT_SRC_DIR}/encoding_wrapper.cpp
+        ${PT_SRC_DIR}/saving_wrapper.cpp
+        ${PT_SRC_DIR}/reading_wrapper.cpp
+        ${PT_SRC_DIR}/load_masks_wrapper.cpp
         )
 
 set(CSV_PARSER_FILES ${CSV_PARSER_DIR}/csv.h)
 
 
-add_executable(${EXE_NAME} fast_rle_exe.cpp ${HEADERS_FILES}
+add_executable(${EXE_NAME} fast_rle_exe.cpp
+        ${HEADERS_FILES}
         ${SRC_FILES}
         ${CSV_PARSER_FILES}
         )
+
 target_link_libraries(${EXE_NAME} PRIVATE ${CONAN_LIBS})
 target_include_directories(${EXE_NAME} PRIVATE ${SRC_DIR})
 set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 17)
 
-Python_add_library(${LIB_NAME} MODULE fast_rle.cpp ${PT_SRC_FILES}
-        ${PT_HEADERS_FILES}
-        ${SRC_FILES}
-        ${HEADERS_FILES}
+Python_add_library(${LIB_NAME} MODULE fast_rle.cpp
         ${CSV_PARSER_FILES}
+        ${HEADERS_FILES}
+        ${SRC_FILES}
+        ${PT_HEADERS_FILES}
+        ${PT_SRC_FILES}
         )
 
 target_link_libraries(${LIB_NAME} PRIVATE ${CONAN_LIBS})
