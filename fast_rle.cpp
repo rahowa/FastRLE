@@ -12,7 +12,6 @@
 #include "python_stuff/reading_wrapper.hpp"
 
 #include <boost/python.hpp>
-#include <boost/python/numpy.hpp>
 
 
 BOOST_PYTHON_MODULE(fast_rle_lib){
