@@ -42,3 +42,12 @@ auto RleFileWrapper::rle() const noexcept -> boost::python::str {
 auto RleFileWrapper::filename() const noexcept -> boost::python::str {
     return boost::python::str(originalFile.filename.c_str());
 }
+
+
+auto RleFileWrapeprPickle::getinitargs(const RleFileWrapper& rleFile) -> boost::python::tuple {
+    return boost::python::make_tuple(
+        rleFile.filename(),
+        rleFile.rle(),
+        rleFile.imageSize()
+    );
+}

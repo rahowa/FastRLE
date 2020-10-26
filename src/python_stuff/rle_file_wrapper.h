@@ -31,4 +31,9 @@ struct RleFileWrapper {
 };
 
 
+
+struct RleFileWrapeprPickle: boost::python::pickle_suite {
+    static auto getinitargs(const RleFileWrapper& rleFile) -> boost::python::tuple;
+};
+
 #endif //FAST_RLE_RLE_FILE_WRAPPER_H
