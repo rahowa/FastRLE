@@ -1,5 +1,6 @@
 #include "fast_rle/decode_utils.h"
 #include "rle_file_wrapper.h"
+#include "converters.h"
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>

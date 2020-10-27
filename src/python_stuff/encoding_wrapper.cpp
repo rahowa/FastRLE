@@ -1,7 +1,7 @@
 #include "encoding_wrapper.hpp"
 
 
-auto EncoderUtils::encodeRleWrapper(const boost::python::numpy::ndarray& image) -> RleFileWrapper {
+auto EncoderUtils::encode(const boost::python::numpy::ndarray& image) -> RleFileWrapper {
     auto cvMatImage = ndarrayToCv(image);
     auto imageSize = cvMatImage.size();
     auto encodedRle = encodeRle(std::move(cvMatImage));
@@ -10,7 +10,7 @@ auto EncoderUtils::encodeRleWrapper(const boost::python::numpy::ndarray& image) 
             boost::python::make_tuple(imageSize.height, imageSize.width)};
 }
 
-auto EncoderUtils::encodeRleListWrapper(const boost::python::list& imagesList) -> boost::python::list {
+auto EncoderUtils::encodeList(const boost::python::list& imagesList) -> boost::python::list {
     auto converterFn = [](const boost::python::numpy::ndarray& img){return ndarrayToCv(img);};
     auto images = pythonListToStd<boost::python::numpy::ndarray, cv::Mat>(imagesList, converterFn);
     
@@ -29,7 +29,7 @@ auto EncoderUtils::encodeRleListWrapper(const boost::python::list& imagesList) -
 }
 
 
-static EncoderUtilsPickle::getinitargs(const EncoderUtils& encUtils) -> boost::python::tuple {
+auto EncoderUtilsPickle::getinitargs(const EncoderUtils& encUtils) -> boost::python::tuple {
     return boost::python::make_tuple();
 }
 
