@@ -12,21 +12,22 @@
 #include <opencv2/core.hpp>
 #include <future>
 #include <thread>
+#include <queue>
 
 
 auto decodeRleMt(RleFiles&& rles) -> std::vector<cv::Mat> ;
 
 auto decodeRle(RleFiles&& rles) ->  std::vector<cv::Mat> ;
 
-auto rle2mask(const RleFile& rleFile) -> cv::Mat ;
+auto decodeRle(const RleFile& rleFile) -> cv::Mat ;
 
-template <typename RandAccIterator>
-auto rle2mask(RandAccIterator begin, RandAccIterator end) -> std::vector<cv::Mat> {
+template <typename RandAccIterator, typename ResultIterator>
+auto decodeRle(RandAccIterator begin, RandAccIterator end, ResultIterator res) -> std::vector<cv::Mat> {
     std::vector<cv::Mat> result(std::distance(begin, end));
     std::transform(std::make_move_iterator(begin),
                    std::make_move_iterator(end),
-                   result.begin(),
-                   [](auto && rle){return rle2mask(std::move(rle));});
+                   res,
+                   [](auto && rle){return decodeRle(std::move(rle));});
     return result;
 }
 
