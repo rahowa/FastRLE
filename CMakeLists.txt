@@ -44,7 +44,7 @@ list(APPEND SRC_FILES
         ${SRC_DIR}/encode_utils.cpp
         ${SRC_DIR}/save_utils.cpp
         ${SRC_DIR}/masks_utils.cpp
-        ${SRC_DIR}/csv_writer.hpp
+        # ${SRC_DIR}/csv_writer.cpp
         )
 
 list(APPEND HEADERS_FILES
@@ -64,22 +64,22 @@ list(APPEND PT_SRC_FILES
         ${PT_SRC_DIR}/rle_file_wrapper.cpp
         ${PT_SRC_DIR}/python_utils.cpp
         ${PT_SRC_DIR}/converters.cpp
-        ${PT_SRC_DIR}/decoding_wrapper.hpp
-        ${PT_SRC_DIR}/encoding_wrapper.hpp
-        ${PT_SRC_DIR}/saving_wrapper.hpp
-        ${PT_SRC_DIR}/reading_wrapper.hpp
-        ${PT_SRC_DIR}/load_masks_wrapper.hpp
+        ${PT_SRC_DIR}/decoding_wrapper.cpp
+        ${PT_SRC_DIR}/encoding_wrapper.cpp
+        ${PT_SRC_DIR}/reading_wrapper.cpp
+        ${PT_SRC_DIR}/load_masks_wrapper.cpp
+        ${PT_SRC_DIR}/saving_wrapper.cpp
         )
         
 list(APPEND PT_HEADES_FILES
         ${PT_SRC_DIR}/rle_file_wrapper.h
         ${PT_SRC_DIR}/python_utils.h
         ${PT_SRC_DIR}/converters.h
-        ${PT_SRC_DIR}/decoding_wrapper.cpp
-        ${PT_SRC_DIR}/encoding_wrapper.cpp
-        ${PT_SRC_DIR}/saving_wrapper.cpp
-        ${PT_SRC_DIR}/reading_wrapper.cpp
-        ${PT_SRC_DIR}/load_masks_wrapper.cpp
+        ${PT_SRC_DIR}/decoding_wrapper.hpp
+        ${PT_SRC_DIR}/encoding_wrapper.hpp
+        ${PT_SRC_DIR}/reading_wrapper.hpp
+        ${PT_SRC_DIR}/load_masks_wrapper.hpp
+        ${PT_SRC_DIR}/saving_wrapper.hpp
         )
 
 set(CSV_PARSER_FILES ${CSV_PARSER_DIR}/csv.h)
@@ -97,10 +97,10 @@ set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 17)
 
 Python_add_library(${LIB_NAME} MODULE fast_rle.cpp
         ${CSV_PARSER_FILES}
-        ${HEADERS_FILES}
         ${SRC_FILES}
-        ${PT_HEADERS_FILES}
+        ${HEADERS_FILES}
         ${PT_SRC_FILES}
+        ${PT_HEADERS_FILES}
         )
 
 target_link_libraries(${LIB_NAME} PRIVATE ${CONAN_LIBS})
