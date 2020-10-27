@@ -9,7 +9,6 @@
 #include <iterator>
 #include <algorithm>
 #include <math.h>
-#include <iostream> 
 
 
 template <typename Iterator>
