@@ -9,7 +9,7 @@ auto encodeRle(cv::Mat&& image) -> std::string {
     image = image.reshape(1, 1);
 
     size_t count = 0;
-    std::string encoding = "";
+    std::stringstream encoding;
     for(size_t i = 0; i < image.total() - 1; ++i){
         count = 1;
         if((int)image.at<uchar>(i) == 255){
@@ -17,10 +17,10 @@ auto encodeRle(cv::Mat&& image) -> std::string {
                 ++count;
                 ++i;
             }
-            encoding += std::to_string(i - 1) + " " + std::to_string(count) + " ";
+            encoding << i - 1 << " " << count << " ";
         }
     }
-    return encoding;
+    return encoding.str();
 }
 
 
@@ -35,7 +35,7 @@ auto encodeRle(std::vector<cv::Mat>&& images) -> std::vector<std::string > {
 
 
 auto encodeRleMt(std::vector<cv::Mat>&& images) -> std::vector<std::string> {
-    std::vector<std::string> encodings; //(images.size());
+    std::vector<std::string> encodings;
     encodings.reserve(images.size());
 
     auto numParts = std::max(2u, std::thread::hardware_concurrency());
