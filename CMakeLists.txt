@@ -5,12 +5,14 @@ set(EXE_NAME fast_rle_exe)
 set(LIB_NAME fast_rle_lib)
 set(Boost_USE_MULTITHREADED TRUE)
 set(CMAKE_SHARED_MODULE_PREFIX "")
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 project(${PROJ_NAME} LANGUAGES C CXX)
 
 if(CMAKE_BUILD_TYPE MATCHES Release)
-    set(CMAKE_CXX_FLAGS "-fPIC -m64 -Ofast -mtune=native -march=native -mfpmath=sse -flto -funroll-loops -fno-signed-zeros -fno-trapping-math" ) #-fexperimental-new-pass-manager -flto=thin")
+    set(CMAKE_CXX_FLAGS "-fPIC -m64 -O3 -fno-builtin") # -mtune=native -march=native -mfpmath=sse -flto -funroll-loops -fno-signed-zeros -fno-trapping-math" ) #-fexperimental-new-pass-manager -flto=thin")
+else()
+    set(CMAKE_CXX_FLAGS "-fPIC -m64 -O1 -fno-builtin")
 endif ()
 
 if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -80,6 +82,7 @@ list(APPEND PT_HEADES_FILES
         ${PT_SRC_DIR}/reading_wrapper.hpp
         ${PT_SRC_DIR}/load_masks_wrapper.hpp
         ${PT_SRC_DIR}/saving_wrapper.hpp
+        ${PT_SRC_DIR}/gil_lock.hpp
         )
 
 set(CSV_PARSER_FILES ${CSV_PARSER_DIR}/csv.h)
