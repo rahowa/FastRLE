@@ -1,3 +1,7 @@
+#ifndef READING_WRAPPER_H
+#define READING_WRAPPER_H
+
+
 #include "converters.h"
 #include "rle_file_wrapper.h"
 #include "fast_rle/csv_utils.h"
@@ -11,3 +15,5 @@
 
 
 auto readCSVWrapper(const boost::python::str & filename) -> boost::python::list ;
+
+#endif 
