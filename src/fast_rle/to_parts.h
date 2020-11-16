@@ -16,35 +16,35 @@ class ToParts{
 public:
     ToParts(size_t numParts, Iterator begin, Iterator end):
             numParts(numParts),
-            begin(begin),
+            partBegin(begin),
+            partEnd(begin),
             end(end),
-            finish(begin),
             batchSize(std::ceil(std::distance(begin, end)/float(numParts)))
     {
     };
 
     auto get(){
-        if(producedIterations == numParts)
-            return std::make_pair(end, end);
+        auto tmpL = partEnd;
+        std::advance(tmpL, batchSize);
+        if(std::distance(partEnd, end) < batchSize)
+            partEnd = end;
 
-        begin = finish;
-        auto diff = std::min(batchSize, static_cast<size_t>(std::distance(finish, end)));
-        std::advance(finish, diff);
-        ++producedIterations;
-        return std::make_pair(begin, finish);
+        else std::advance(partEnd, batchSize);
+        auto res = std::make_pair(partBegin, partEnd);
+        partBegin = partEnd;
+        return res;
     }
 
     auto done() const{
-        return producedIterations == numParts;
+        return std::distance(partEnd, end) == 0;
     }
 
 private:
-    size_t producedIterations{0};
     size_t numParts;
     size_t batchSize;
-    Iterator begin;
+    Iterator partBegin;
+    Iterator partEnd;
     Iterator end;
-    Iterator finish;
 };
 
 #endif //FAST_RLE_TO_PARTS_H
