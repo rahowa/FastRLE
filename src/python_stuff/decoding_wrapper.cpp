@@ -14,6 +14,14 @@ auto DecoderUtils::decodeList(const boost::python::list & rlesWrapped) -> boost:
     return stdToPythonList(cvMatToNumpy(std::move(decodedRle)));
 }
 
+auto DecoderUtils::decodeListMt(const boost::python::list & rlesWrapped) -> boost::python::list {    
+    auto extractOriginalFn = [](RleFileWrapper&& wrapper){return wrapper.originalFile;};
+    // GilLock lock;
+    auto result = pythonListToStd<RleFileWrapper, RleFile>(rlesWrapped, extractOriginalFn);
+    auto decodedRle = decodeRleMt(std::move(result));
+    auto res = stdToPythonList(cvMatToNumpy(std::move(decodedRle)));
+    return res;
+}
 
 auto DecoderUtilsPickle::getinitargs(const DecoderUtils& decUtils) -> boost::python::tuple {
     return boost::python::make_tuple();
